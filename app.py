@@ -58,6 +58,53 @@ def libros():
     con.close()
     return render_template('libros.html', libros=libros)
 
+@app.route("/nuevo/libro", methods=['GET','POST'])
+def nuevo_libro():
+    if request.method == 'POST':
+        titulo = request.form['titulo']
+        autor = request.form['autor']
+        anio = request.form['anio']
+
+        con = get_db_connection()
+        con.execute("INSERT INTO libros (titulo, autor, anio) VALUES(?,?,?)",(titulo, autor, anio))
+
+        con.commit()
+        con.close()
+
+        flash('Libro agregado Correctamente')
+        return redirect(url_for('libros'))
+    return render_template('libro_form.html')
+
+@app.route("/libro/editar/<int:id>", methods=['GET','POST'])
+def editar_libro(id):
+    con = get_db_connection()
+    cursor = con.execute("SELECT * FROM libros WHERE id = ?",(id,)).fetchone()
+
+    if request.method == 'POST':
+        titulo = request.form['titulo']
+        autor = request.form['autor']
+        anio = request.form['anio']
+
+        con.execute("UPDATE libros SET titulo = ?, autor = ?, anio = ? WHERE id = ?", (titulo, autor, anio, id))
+
+        con.commit()
+        con.close()
+        flash('Libro Actualizado', 'success')
+        return redirect(url_for('libros'))
+
+
+
+    return render_template('libro_form.html',cursor=cursor)
+
+@app.route('/libro/eliminar/<int:id>')
+def eliminar_libro(id):
+    con = get_db_connection()
+    con.execute("DELETE FROM libros WHERE id=?",(id,))
+    con.commit()
+    con.close()
+    flash('Libro Eliminado','success')
+    return redirect(url_for('libros'))
+
 @app.route("/usuarios")
 def usuarios():
     con = get_db_connection()

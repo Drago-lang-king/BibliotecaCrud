@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow mt-4">
+    <div class="card-header text-white" style="background-color: #67ad82dc;">
+        <h2 class="mb-0">
+            {% if cursor %}
+                Editar 
+            {% else %}
+                Nuevo 
+            {% endif %}
+            Libro
+            
+        </h2>
+    </div>
+    <div class="card-body">
+        <form action="" method="POST">
+            <div class="mb-3">
+                <label for="" class="form-label">Titulo</label>
+                <input type="text" class="form-control" name="titulo" value="{{cursor.titulo if cursor else ' '}}">
+
+            </div>
+
+            <div class="mb-3">
+                <label for="" class="form-lebel">Autor</label>
+                <input type="text" class="form-control" name="autor" value="{{ cursor.autor if cursor else ' ' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-lebel">Año</label>
+                <input type="number" class="form-control" name="anio" value="{{ cursor.anio if cursor else ' '}}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">
+                Guardar
+            </button>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}
