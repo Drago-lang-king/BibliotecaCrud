@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h1>Libros</h1>
+<table class="table table-striped table-hover mt-4">
+  <thead>
+    <th>Id</th>
+    <th>Titulo</th>
+    <th>Autor</th>
+    <th>Año</th>
+    <th>Acciones</th>
+  </thead>
+  <tbody>
+    {% for libro in libros %}
+    <tr>
+      <td>{{ libro.id }}</td>
+      <td>{{ libro.titulo }}</td>
+      <td>{{ libro.autor }}</td>
+      <td>{{ libro.anio }}</td>
+      <td> </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+
+
+</table>
+
+{% endblock %}
