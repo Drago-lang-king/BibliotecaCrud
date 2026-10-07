@@ -5,6 +5,9 @@
 
 <h1>Prestamos</h1>
 
+<a href="{{ url_for('nuevo_prestamo') }}" class="btn btn-success mb-3">Nuevo Prestamo</a>
+
+
 <table class="table table striped table-hover mt-4">
     <thead class="table-dark">
         <tr>
@@ -19,11 +22,15 @@
     <tbody>
         {% for prestamo in prestamos %}
         <tr>
-            <td>prestamo.id</td>
-            <td>prestamo.nombres</td>
-            <td>prestamo.fecha_prestamo</td>
-            <td>prestamo.fecha_devolucion</td>
-            <td>prestamo.titulo</td>
+            <td>{{ prestamo.id }}</td>
+            <td>{{ prestamo.usuario }}</td>
+            <td>{{ prestamo.fecha_prestamo }}</td>
+            <td>{{ prestamo.fecha_devolucion }}</td>
+            <td>{{ prestamo.titulo }}</td>
+            <td>
+                <a href="{{ url_for('editar_prestamo', id=prestamo.id) }}" class="btn btn-warning">Editar</a>
+                <a href="{{ url_for('eliminar_prestamo', id=prestamo.id ) }}" class="btn btn-danger">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

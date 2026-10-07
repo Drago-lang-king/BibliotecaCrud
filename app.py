@@ -189,6 +189,70 @@ def prestamos():
     con.close()
     return render_template('prestamos.html', prestamos=prestamos)
 
+@app.route("/nuevo/prestamo",methods=['GET','POST'])
+def nuevo_prestamo():
+    con = get_db_connection()
+
+    usuarios = con.execute("SELECT * FROM usuarios").fetchall()
+
+    libros = con.execute("SELECT * FROM libros").fetchall()
+
+
+    if request.method == 'POST':
+        fecha_prestamo = request.form['fecha_prestamo']
+        fecha_devolucion = request.form['fecha_devolucion']
+        libro_id = request.form['libro_id']
+        usuario_id = request.form['usuario_id']
+
+        con.execute(
+            "INSERT INTO prestamos (fecha_prestamo, fecha_devolucion, libro_id, usuario_id) VALUES(?, ?, ?, ?)", 
+            (fecha_prestamo, fecha_devolucion, libro_id, usuario_id)
+        )
+
+        con.commit()
+        con.close()
+
+        flash('Prestamo agregado correctamente', 'success')
+        return redirect(url_for('prestamos'))
+    con.close()
+    return render_template('prestamo_form.html', usuarios=usuarios, libros=libros)
+
+@app.route("/editar/prestamo/<int:id>", methods=['GET','POST'])
+def editar_prestamo(id):
+    con = get_db_connection()
+    prestamo = con.execute("SELECT * FROM prestamos WHERE id=?",(id,)).fetchone()
+    usuarios = con.execute("SELECT * FROM usuarios").fetchall()
+    libros = con.execute("SELECT * FROM libros").fetchall()
+
+    if request.method == 'POST':
+        fecha_prestamo = request.form['fecha_prestamo']
+        fecha_devolucion = request.form['fecha_devolucion']
+        libro_id = request.form['libro_id']
+        usuario_id = request.form['usuario_id']
+
+        con.execute("UPDATE prestamos SET fecha_prestamo=?, fecha_devolucion=?, libro_id=?, usuario_id=? WHERE id=?",
+                    (fecha_prestamo, fecha_devolucion, libro_id, usuario_id, id))
+        con.commit()
+        con.close()
+
+        flash('Prestamo actualizado corectamente ', 'success')
+        return redirect(url_for('prestamos'))
+    con.close()
+    return render_template('prestamo_form.html', prestamo=prestamo, usuarios=usuarios, libros=libros)
+
+@app.route('/eliminar/prestamo/<int:id>')
+def eliminar_prestamo(id):
+    con= get_db_connection()
+    con.execute(
+        "DELETE FROM prestamos WHERE id=?",
+        (id,)
+    )
+    con.commit()
+    con.close()
+
+    flash('Prestamo eliminado corectamente', 'success')
+    return redirect(url_for('prestamos'))
+
 if __name__ == "__main__":
     app.run(debug=True)
 
