@@ -2,29 +2,35 @@
 {% block content %}
 
 <h1>Usuarios</h1>
+
+<a href="{{ url_for('nuevo_usuario') }}" class="btn btn-success mb-3">Nuevo Usuario</a>
+
 <table class="table table-striped mt-4 ">
-            <thead style="background-color: #E3F2FD; color: #1565C0;">
-                <tr>
-                    <th>Id</th>
-                    <th>Ci</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for usuario in usuarios  %}
-                <tr>
-                    <td> {{usuario.id}} </td>
-                    <td> {{usuario.carnet}} </td>
-                    <td> {{usuario.nombre}} </td>
-                    <td> {{usuario.apellidos}} </td>
-                    <td>  </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <thead style="background-color: #E3F2FD; color: #1565C0;">
+        <tr>
+            <th>Id</th>
+            <th>Ci</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td> {{usuario.id}} </td>
+            <td> {{usuario.carnet}} </td>
+            <td> {{usuario.nombre}} </td>
+            <td> {{usuario.apellidos}} </td>
+            <td>
+                <a href="{{ url_for('editar_usuario', id=usuario.id)}}" class="btn btn-warning">Editar</a>
+                <a href="{{ url_for('eliminar_usuario', id=usuario.id)}}" class="btn btn-danger"
+                    onclick="return(confirm('Estas seguro de eliminar'))">Eliminar</a>
+            </td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
-
-

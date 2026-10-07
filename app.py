@@ -92,8 +92,6 @@ def editar_libro(id):
         flash('Libro Actualizado', 'success')
         return redirect(url_for('libros'))
 
-
-
     return render_template('libro_form.html',cursor=cursor)
 
 @app.route('/libro/eliminar/<int:id>')
@@ -113,6 +111,65 @@ def usuarios():
     con.close()
     return render_template('usuarios.html', usuarios=usuarios)
 
+@app.route("/nuevo/usuario", methods=['GET','POST'])
+def nuevo_usuario():
+    if request.method=='POST':
+        nombre = request.form['nombre']
+        apellidos = request.form['apellidos']
+        carnet = request.form['carnet']
+
+        con = get_db_connection()
+
+        con.execute(
+            "INSERT INTO usuarios(nombre, apellidos, carnet) VALUES(?,?,?)",(nombre, apellidos, carnet)
+        )
+        con.commit()
+        con.close()
+
+        flash('Usuario agregado corectamente')
+
+        return redirect(url_for('usuarios'))
+
+    return render_template('usuario_form.html')
+
+@app.route('/editar/usuario/<int:id>', methods=['GET','POST'])
+def editar_usuario(id):
+    con = get_db_connection()
+    usuario = con.execute(
+        "SELECT * FROM usuarios WHERE id=?",(id,)
+    ).fetchone()
+    if request.method == 'POST':
+        ci = request.form['carnet']
+        nombre = request.form['nombre']
+        apellidos = request.form['apellidos']
+
+        con.execute(
+            "UPDATE usuarios SET carnet=?, nombre=?, apellidos=? WHERE id=?",
+            (ci, nombre, apellidos, id)
+        )
+
+        con.commit()
+        con.close()
+
+        flash('Usuario actualizado corectamente', 'success')
+
+        return redirect(url_for('usuarios'))
+    con.close()
+    return render_template('usuario_form.html',usuario=usuario)
+
+@app.route("/usuario/eliminar/<int:id>")
+def eliminar_usuario(id):
+    con=get_db_connection()
+
+    con.execute(
+        "DELETE FROM usuarios WHERE id = ?",
+        (id,)
+    )
+    con.commit()
+    con.close()
+    flash('Usuario Eliminado','success')
+    return redirect(url_for('usuarios'))
+
 @app.route('/prestamos')
 def prestamos():
     con = get_db_connection()
@@ -120,7 +177,7 @@ def prestamos():
     prestamos = con.execute("""
         SELECT 
         p.id,
-        u.nombre ||' '|| u.apellidos as usuarios,
+        u.nombre ||' '|| u.apellidos as usuario,
         p.fecha_prestamo,
         p.fecha_devolucion,
         l.titulo
